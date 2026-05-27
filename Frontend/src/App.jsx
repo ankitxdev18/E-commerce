@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { asyncgetusers } from "./store/userActions";
 import { useDispatch, useSelector } from "react-redux";
+import Mainroutes from "./routes/Mainroutes";
 
 const App = () => {
   const data = useSelector((state) => state);
@@ -11,7 +12,11 @@ const App = () => {
     dispatch(asyncgetusers());
   }, []);
 
-  return <div>App</div>;
+  return (
+    <div className="w-screen  h-screen bg-gray-800 text-white ">
+      <Mainroutes />
+    </div>
+  );
 };
 
 export default App;
