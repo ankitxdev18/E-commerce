@@ -18,7 +18,7 @@ const Login = () => {
         {...register("username")}
         className=" mb-3 outline-0 border-b p-2 text-4xl"
         type="text"
-        placeholder="Ankit-kumar"
+        placeholder="ankit-kumar"
       />
       <input
         {...register("email")}
@@ -33,10 +33,12 @@ const Login = () => {
         placeholder="******"
       />
 
-      <button>Login User</button>
+      <button className="mt-5 px-4 py-2 bg-blue-400 rounded">Login User</button>
       <p>
-        Don't have an account?
-        <Link to="/register">Register</Link>
+        Don't have an account?{" "}
+        <Link className="text-blue-400" to="/register">
+          Register
+        </Link>
       </p>
     </form>
   );
