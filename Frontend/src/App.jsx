@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { asyncgetusers } from "./store/userActions";
+import { asyncregisteruser } from "./store/actions/userActions";
 import { useDispatch, useSelector } from "react-redux";
 import Mainroutes from "./routes/Mainroutes";
 import Nav from "./components/Nav";
@@ -10,7 +10,7 @@ const App = () => {
   console.log(data);
 
   useEffect(() => {
-    dispatch(asyncgetusers());
+    dispatch(asyncregisteruser());
   }, []);
 
   return (

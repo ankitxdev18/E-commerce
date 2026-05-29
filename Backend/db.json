@@ -4,12 +4,38 @@
       "id": "uhwqigwoqahgd",
       "username": "Ankit-kumar",
       "email": "ankit@kumar.com",
-      "password": "123456"
+      "password": "123456",
+      "isAdmin": true
+    },
+    {
+      "username": "ankit285r",
+      "email": "ankit285r@gmail.com",
+      "password": "rAgini18&20",
+      "id": "WpB56sveC4I",
+      "isAdmin": false
+    },
+    {
+      "id": "iDsiH0usyQY"
+    },
+    {
+      "id": "sqFi8g6T2kA"
+    },
+    {
+      "id": "VMz4gokX98I"
+    },
+    {
+      "id": "9wEEYlYT0Yw"
+    },
+    {
+      "id": "c8JxQiTgAnI"
+    },
+    {
+      "id": "n39XKVbtEo4"
     }
   ],
-  "products": [ 
+  "products": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
       "price": 109.95,
       "description": "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
@@ -21,5 +47,6 @@
       }
     }
   ],
-  "carts": []
+  "carts": [],
+  "$schema": "./node_modules/json-server/schema.json"
 }
