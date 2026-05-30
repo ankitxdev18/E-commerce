@@ -1,23 +1,22 @@
 import { useEffect } from "react";
-import { asynccurrentuser } from "./store/actions/userActions";
-import { useDispatch } from "react-redux";
+import ModernNav from "./components/ModernNav";
 import Mainroutes from "./routes/Mainroutes";
-import Nav from "./components/Nav";
-import { asyncloadproducts } from "./store/actions/productActions";
+import { useDispatch } from "react-redux";
+import { restoreSession } from "./store/slices/userSlice";
 
 const App = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(asynccurrentuser());
-    dispatch(asyncloadproducts());
-  }, [dispatch]);
+    const dispatch = useDispatch();
 
-  return (
-    <div className="font-thin w-screen  h-screen bg-gray-800 text-white px-[10%]">
-      <Nav />
-      <Mainroutes />
-    </div>
-  );
+    useEffect(() => {
+        dispatch(restoreSession());
+    }, [dispatch]);
+
+    return (
+        <div className="min-h-screen bg-white">
+            <ModernNav />
+            <Mainroutes />
+        </div>
+    );
 };
 
 export default App;

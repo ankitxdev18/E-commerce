@@ -1,42 +1,97 @@
-import axios from "../../api/axiosconfig";
-import { loaduser, clearuser } from "../reducers/userSlice";
+import { loginuser, logoutuser, setAuthChecked } from "../reducers/userSlice";
+import axios from "../../api/config";
 
-export const asynccurrentuser = () => async (dispatch, getState) => {
-  try {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) dispatch(loaduser(user));
-    else console.log("User not logged in!");
-  } catch (error) {
-    console.log(error);
-  }
+export const asynccurrentuser = () => async (dispatch) => {
+    try {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user) {
+            dispatch(loginuser(user));
+            console.log("Session Restored!");
+            return user;
+        }
+        dispatch(setAuthChecked());
+        return null;
+    } catch (error) {
+        console.error("Failed to restore session:", error);
+        dispatch(setAuthChecked());
+        return null;
+    }
 };
 
-export const asynclogoutuser = () => async (dispatch, getState) => {
-  try {
-    localStorage.removeItem("user");
-    console.log("User Logged Out!");
-    dispatch(clearuser());
-  } catch (error) {
-    console.log(error);
-  }
+export const asyncsigninuser = (user) => async (dispatch) => {
+    try {
+        const { data } = await axios.get(
+            `/users?email=${encodeURIComponent(user.email)}&password=${encodeURIComponent(
+                user.password
+            )}`
+        );
+
+        if (data[0]) {
+            localStorage.setItem("user", JSON.stringify(data[0]));
+            dispatch(loginuser(data[0]));
+            console.log("User logged in!");
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Signin failed:", error);
+        return false;
+    }
 };
-export const asyncloginusers = (user) => async (dispatch, getState) => {
-  try {
-    const { data } = await axios.get(
-      `/users?email=${user.email}&password=${user.password}`,
-    );
-    localStorage.setItem("user", JSON.stringify(data[0]));
-    dispatch(loaduser(data[0]));
-  } catch (error) {
-    console.log(error);
-  }
+
+export const asyncsignupuser = (user) => async () => {
+    try {
+        const { data: existingUsers } = await axios.get(
+            `/users?email=${encodeURIComponent(user.email)}`
+        );
+
+        if (existingUsers.length > 0) {
+            return false;
+        }
+
+        await axios.post("/users", user);
+        console.log("User Registered!");
+        return true;
+    } catch (error) {
+        console.error("Signup failed:", error);
+        return false;
+    }
 };
-export const asyncregisteruser = (user) => async (dispatch, getState) => {
-  try {
-    const res = await axios.post("/users", user);
-    localStorage.setItem("user", JSON.stringify(res.data));
-    dispatch(loaduser(res.data));
-  } catch (error) {
-    console.log(error);
-  }
+
+export const asyncupdateuser = (id, user) => async (dispatch) => {
+    try {
+        const { data } = await axios.patch(`/users/${id}`, user);
+        localStorage.setItem("user", JSON.stringify(data));
+        dispatch(loginuser(data));
+        console.log("User Updated!");
+        return data;
+    } catch (error) {
+        console.error("Update failed:", error);
+        return null;
+    }
+};
+
+export const asynclogoutuser = () => async (dispatch) => {
+    try {
+        localStorage.removeItem("user");
+        dispatch(logoutuser());
+        console.log("User logged out!");
+        return true;
+    } catch (error) {
+        console.error("Logout failed:", error);
+        return false;
+    }
+};
+
+export const asyncdeleteuser = (id) => async (dispatch) => {
+    try {
+        await axios.delete(`/users/${id}`);
+        localStorage.removeItem("user");
+        dispatch(logoutuser());
+        console.log("User Deleted!");
+        return true;
+    } catch (error) {
+        console.error("Delete failed:", error);
+        return false;
+    }
 };

@@ -1,22 +1,90 @@
-import { Route, Routes } from "react-router-dom";
-import Home from "../pages/Home";
-import Products from "../pages/Products";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import CreateProduct from "../pages/admin/CreateProduct";
-import UpdateProduct from "../pages/admin/UpdateProduct";
+import { Routes, Route } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
+import { Spinner } from "../components/ui/Animations";
+
+// Lazy load modern pages
+const ModernProducts = lazy(() => import("../pages/ModernProducts"));
+const ModernProductDetails = lazy(() => import("../pages/ModernProductDetails"));
+const ModernCart = lazy(() => import("../pages/ModernCart"));
+const ModernSignin = lazy(() => import("../pages/ModernSignin"));
+const ModernSignup = lazy(() => import("../pages/ModernSignup"));
+const ModernCreateProduct = lazy(() => import("../pages/ModernCreateProduct"));
+const ModernSettings = lazy(() => import("../pages/ModernSettings"));
+const ModernAbout = lazy(() => import("../pages/ModernAbout"));
+const ModernPageNotFound = lazy(() => import("../pages/ModernPageNotFound"));
 
 const Mainroutes = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/products" element={<Products />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/admin/create-product" element={<CreateProduct/>} />
-      <Route path="/update-product/:id" element={<UpdateProduct/>} />
-    </Routes>
-  );
+    const loadingFallback = (
+        <div className="min-h-screen flex items-center justify-center">
+            <Spinner size="lg" />
+        </div>
+    );
+
+    return (
+        <Suspense fallback={loadingFallback}>
+            <Routes>
+                <Route path="/" element={<ModernProducts />} />
+
+                <Route
+                    path="/signin"
+                    element={
+                        <PublicRoute>
+                            <ModernSignin />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/signup"
+                    element={
+                        <PublicRoute>
+                            <ModernSignup />
+                        </PublicRoute>
+                    }
+                />
+
+                <Route
+                    path="/settings"
+                    element={
+                        <ProtectedRoute>
+                            <ModernSettings />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/update-product/:id"
+                    element={
+                        <ProtectedRoute>
+                            <ModernProductDetails />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/create-product"
+                    element={
+                        <ProtectedRoute>
+                            <ModernCreateProduct />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/cart"
+                    element={
+                        <ProtectedRoute>
+                            <ModernCart />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route path="/about" element={<ModernAbout />} />
+                <Route path="*" element={<PageNotFound />} />
+            </Routes>
+        </Suspense>
+    );
 };
 
 export default Mainroutes;
