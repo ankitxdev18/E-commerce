@@ -4,16 +4,16 @@ import { asyncloginusers } from "../store/actions/userActions";
 import { useDispatch } from "react-redux";
 
 const Login = () => {
-  const { register, reset, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
 
-  const LoginHandle = (user) => {
+  const loginHandle = (user) => {
     dispatch(asyncloginusers(user));
   };
 
   return (
     <form
-      onSubmit={handleSubmit(LoginHandle)}
+      onSubmit={handleSubmit(loginHandle)}
       className="flex flex-col w-1/2 justify-start items-start "
     >
       <input
@@ -29,7 +29,9 @@ const Login = () => {
         placeholder="******"
       />
 
-      <button className="mt-5 px-4 py-2 bg-blue-400 rounded">Login User</button>
+      <button className="transition-transform active:scale-95 mt-5 px-4 py-2 bg-blue-400 rounded">
+        Login User
+      </button>
       <p>
         Don't have an account?{" "}
         <Link className="text-blue-400" to="/register">

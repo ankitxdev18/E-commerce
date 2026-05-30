@@ -5,7 +5,7 @@ import { asyncregisteruser } from "../store/actions/userActions";
 import { useDispatch } from "react-redux";
 
 const Register = () => {
-  const { register, reset, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const RegisterHandler = (user) => {
@@ -40,7 +40,7 @@ const Register = () => {
         placeholder="******"
       />
 
-      <button className="mt-5 px-4 py-2 rounded bg-blue-400">Register</button>
+      <button className="transition-transform active:scale-95 mt-5 px-4 py-2 rounded bg-blue-400">Register</button>
       <p>
         Already have an account?{" "}
         <Link className="text-blue-400" to="/login">

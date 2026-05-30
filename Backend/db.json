@@ -8,29 +8,11 @@
       "isAdmin": true
     },
     {
-      "username": "ankit285r",
-      "email": "ankit285r@gmail.com",
-      "password": "rAgini18&20",
-      "id": "WpB56sveC4I",
+      "username": "ankit99",
+      "email": "ankit7209277@gmail.com",
+      "password": "@nkiTrAginI18&20",
+      "id": "9VGznZDVO1g",
       "isAdmin": false
-    },
-    {
-      "id": "iDsiH0usyQY"
-    },
-    {
-      "id": "sqFi8g6T2kA"
-    },
-    {
-      "id": "VMz4gokX98I"
-    },
-    {
-      "id": "9wEEYlYT0Yw"
-    },
-    {
-      "id": "c8JxQiTgAnI"
-    },
-    {
-      "id": "n39XKVbtEo4"
     }
   ],
   "products": [
@@ -40,11 +22,15 @@
       "price": 109.95,
       "description": "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
       "category": "men's clothing",
-      "image": "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png",
-      "rating": {
-        "rate": 3.9,
-        "count": 120
-      }
+      "image": "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png"
+    },
+    {
+      "image": "https://cdn.dummyjson.com/recipe-images/1.webp",
+      "title": "gh",
+      "price": "567",
+      "description": "dfg",
+      "category": "df",
+      "id": "JDZHnznBwII"
     }
   ],
   "carts": [],

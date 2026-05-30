@@ -1,7 +1,7 @@
 import axios from "../../api/axiosconfig";
-import { loaduser } from "../reducers/userSlice";
+import { loaduser, clearuser } from "../reducers/userSlice";
 
-export const asynccurrentusers = (user) => async (dispatch, getState) => {
+export const asynccurrentuser = () => async (dispatch, getState) => {
   try {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) dispatch(loaduser(user));
@@ -11,9 +11,11 @@ export const asynccurrentusers = (user) => async (dispatch, getState) => {
   }
 };
 
-export const asynclogoutusers = (user) => async (dispatch, getState) => {
+export const asynclogoutuser = () => async (dispatch, getState) => {
   try {
-    localStorage.setItem("user", "");
+    localStorage.removeItem("user");
+    console.log("User Logged Out!");
+    dispatch(clearuser());
   } catch (error) {
     console.log(error);
   }
@@ -21,10 +23,10 @@ export const asynclogoutusers = (user) => async (dispatch, getState) => {
 export const asyncloginusers = (user) => async (dispatch, getState) => {
   try {
     const { data } = await axios.get(
-      `/users?email=${user.email}$password=${user.password}`,
+      `/users?email=${user.email}&password=${user.password}`,
     );
-    console.log(data[0]);
     localStorage.setItem("user", JSON.stringify(data[0]));
+    dispatch(loaduser(data[0]));
   } catch (error) {
     console.log(error);
   }
@@ -32,7 +34,8 @@ export const asyncloginusers = (user) => async (dispatch, getState) => {
 export const asyncregisteruser = (user) => async (dispatch, getState) => {
   try {
     const res = await axios.post("/users", user);
-    console.log(res);
+    localStorage.setItem("user", JSON.stringify(res.data));
+    dispatch(loaduser(res.data));
   } catch (error) {
     console.log(error);
   }
