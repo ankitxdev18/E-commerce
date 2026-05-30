@@ -11,7 +11,7 @@ const UserSlice = createSlice({
     loaduser: (state, action) => {
       state.users = action.payload;
     },
-    clearuser: (state) => {
+    clearuser: (state) => { 
       state.users = [];
     },
   },
