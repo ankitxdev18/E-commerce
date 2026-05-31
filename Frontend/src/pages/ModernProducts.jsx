@@ -1,223 +1,290 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { motion } from "framer-motion";
-import { useSelector, useDispatch } from "react-redux";
 import useInfinite from "../utils/useInfinite";
 import ModernProductCard from "../components/ModernProductCard";
 import { SkeletonProductCard, Spinner, EmptyCart } from "../components/ui/Animations";
 import { Button } from "../components/ui/Base";
 import { Zap, TrendingUp, Gift, Truck } from "lucide-react";
 
+const categories = [
+  { label: "All", value: "All" },
+  { label: "Electronics", value: "electronics" },
+  { label: "Fashion", value: "fashion" },
+  { label: "Books", value: "books" },
+  { label: "Home", value: "home" },
+  { label: "Sports", value: "sports" },
+];
+
+const testimonials = [
+  {
+    quote: "ShopHub made shopping effortless. The whole experience feels premium and polished.",
+    name: "Mia Brook",
+    role: "Verified Buyer",
+  },
+  {
+    quote: "Fast shipping, beautiful product pages, and a checkout flow that feels modern.",
+    name: "Noah Lee",
+    role: "Frequent Shopper",
+  },
+  {
+    quote: "I love how clear and responsive the UI is across mobile and desktop.",
+    name: "Alex Kim",
+    role: "Product Designer",
+  },
+];
+
 const ModernProducts = () => {
+  const productsRef = useRef(null);
+  const testimonialsRef = useRef(null);
   const { products, hasMore, status, error, fetchLazyProducts } = useInfinite();
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const categories = [
-    "All",
-    "Electronics",
-    "Fashion",
-    "Books",
-    "Home",
-    "Sports",
-  ];
+  const filteredProducts = useMemo(
+    () =>
+      selectedCategory === "All"
+        ? products
+        : products.filter(
+            (product) =>
+              product.category?.toLowerCase() === selectedCategory.toLowerCase()
+          ),
+    [products, selectedCategory]
+  );
 
-  const filteredProducts = selectedCategory === "All"
-    ? products
-    : products.filter((p) => p.category === selectedCategory);
+  const featuredProducts = useMemo(() => products.slice(0, 4), [products]);
+  const trendingProducts = useMemo(() => products.slice(4, 8), [products]);
+
+  const scrollTo = (ref) => ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50">
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16 md:py-24"
+        transition={{ duration: 0.6 }}
+        className="relative overflow-hidden bg-hero-pattern bg-cover bg-center py-20 sm:py-24"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4">
-                Shop Your <span className="text-blue-200">Favorites</span>
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 to-transparent" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div className="space-y-6">
+              <span className="inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm ring-1 ring-blue-100">
+                Premium shopping experience
+              </span>
+              <h1 className="text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+                Discover products that feel modern, polished, and effortless.
               </h1>
-              <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-                Discover premium products handpicked just for you. Fast shipping, secure checkout, and 100% satisfaction guaranteed.
+              <p className="max-w-2xl text-lg leading-8 text-slate-600">
+                ShopHub combines premium product discovery with fast checkout, secure payment flows, and thoughtful design across every screen.
               </p>
-              <div className="flex flex-wrap gap-4">
-                <Button variant="secondary" size="lg">
-                  Explore Now
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  onClick={() => scrollTo(productsRef)}
+                  aria-label="Scroll to product collections"
+                >
+                  Browse collections
                 </Button>
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
-                  Learn More
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-white text-white hover:bg-white/10"
+                  onClick={() => scrollTo(testimonialsRef)}
+                  aria-label="Scroll to testimonials"
+                >
+                  Hear from shoppers
                 </Button>
               </div>
-            </motion.div>
-
-            {/* Right Visual */}
-            <motion.div
-              animate={{ y: [0, -20, 0] }}
-              transition={{ duration: 3, repeat: Infinity }}
-              className="hidden md:flex justify-center items-center"
-            >
-              <div className="w-80 h-80 bg-white/20 rounded-3xl border-2 border-white/30 flex items-center justify-center text-6xl">
-                🛍️
-              </div>
-            </motion.div>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2">
+              {featuredProducts.map((product) => (
+                <article
+                  key={product.id}
+                  className="rounded-[32px] bg-white/80 p-5 shadow-xl shadow-slate-900/5 backdrop-blur-lg"
+                >
+                  <p className="text-sm font-semibold uppercase tracking-[0.35em] text-blue-700">Featured</p>
+                  <h2 className="mt-4 text-xl font-semibold text-slate-900 line-clamp-2">{product.title}</h2>
+                  <p className="mt-3 text-sm leading-6 text-slate-600 line-clamp-2">{product.description}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </motion.section>
 
-      {/* Features Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="rounded-[32px] bg-white p-8 shadow-card">
+            <h2 className="text-2xl font-semibold text-slate-900">Why ShopHub</h2>
+            <p className="mt-4 text-slate-600 leading-7">
+              Built for high-converting experiences, fast browsing, and elegant product discovery.
+            </p>
+          </div>
           {[
-            { icon: Truck, label: "Fast Shipping", desc: "Worldwide delivery" },
-            { icon: Gift, label: "Best Deals", desc: "Exclusive discounts" },
-            { icon: Zap, label: "Quick Payment", desc: "Secure checkout" },
-            { icon: TrendingUp, label: "Trending", desc: "Latest products" },
-          ].map((feature, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
+            { icon: Truck, title: "Fast shipping", text: "Delivered to your door in record time." },
+            { icon: Gift, title: "Exclusive deals", text: "Curated offers for your next purchase." },
+            { icon: Zap, title: "Fluid checkout", text: "Secure and simple payment experiences." },
+          ].map((feature, index) => (
+            <motion.article
+              key={index}
+              initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200 text-center hover:shadow-md transition-all"
+              transition={{ delay: index * 0.08 }}
+              className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md"
             >
-              <feature.icon className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="font-semibold text-neutral-900 mb-1">{feature.label}</h3>
-              <p className="text-sm text-neutral-600">{feature.desc}</p>
-            </motion.div>
+              <feature.icon className="h-11 w-11 rounded-3xl bg-blue-50 p-3 text-blue-600" aria-hidden="true" />
+              <h3 className="mt-6 text-xl font-semibold text-slate-900">{feature.title}</h3>
+              <p className="mt-3 text-slate-600 leading-7">{feature.text}</p>
+            </motion.article>
           ))}
         </div>
       </section>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Category Filter */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold text-neutral-900 mb-6">
-            Shop by Category
-          </h2>
-          <div className="flex flex-wrap gap-3">
-            {categories.map((cat) => (
-              <motion.button
-                key={cat}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-6 py-2.5 rounded-lg font-medium transition-all ${
-                  selectedCategory === cat
-                    ? "bg-blue-600 text-white shadow-lg"
-                    : "bg-white text-neutral-700 border border-neutral-200 hover:border-blue-300"
-                }`}
-              >
-                {cat}
-              </motion.button>
-            ))}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-3xl font-semibold text-slate-900">Browse by category</h2>
+            <p className="mt-2 text-slate-600">Filter the collection to find the perfect match for your lifestyle.</p>
           </div>
-        </motion.div>
-
-        {/* Loading State */}
-        {status === "loading" && products.length === 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <SkeletonProductCard key={i} />
-            ))}
-          </div>
-        )}
-
-        {/* Error State */}
-        {status === "failed" && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-red-50 border border-red-200 rounded-lg p-8 text-center"
-          >
-            <p className="text-red-600 font-medium mb-4">
-              ⚠️ {error || "Failed to load products"}
-            </p>
-            <Button
-              variant="primary"
-              onClick={() => window.location.reload()}
+        </div>
+        <div className="mt-6 flex flex-wrap gap-3">
+          {categories.map((category) => (
+            <button
+              key={category.value}
+              type="button"
+              onClick={() => setSelectedCategory(category.value)}
+              aria-pressed={selectedCategory === category.value}
+              className={`rounded-full px-5 py-3 text-sm font-semibold transition ${
+                selectedCategory === category.value
+                  ? "bg-blue-600 text-white shadow-lg"
+                  : "bg-white text-slate-700 border border-slate-200 hover:border-blue-300"
+              }`}
             >
-              Try Again
+              {category.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" ref={productsRef} id="collections">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="text-3xl font-semibold text-slate-900">New arrivals</h2>
+            <p className="mt-2 text-slate-600">Quality products updated daily for modern shoppers.</p>
+          </div>
+          <p className="text-sm text-slate-500">Showing {filteredProducts.length} products</p>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {status === "loading" && products.length === 0 ? (
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <SkeletonProductCard key={index} />
+            ))}
+          </div>
+        ) : status === "failed" ? (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-[32px] border border-rose-200 bg-rose-50 p-10 text-center"
+          >
+            <p className="text-xl font-semibold text-rose-700">Unable to load products</p>
+            <p className="mt-3 text-slate-600">{error || "An unexpected error occurred."}</p>
+            <Button variant="primary" className="mt-6" onClick={() => window.location.reload()}>
+              Retry
             </Button>
           </motion.div>
-        )}
-
-        {/* Empty State */}
-        {filteredProducts.length === 0 && status !== "loading" && (
+        ) : filteredProducts.length === 0 ? (
           <EmptyCart />
-        )}
-
-        {/* Products Grid */}
-        {filteredProducts.length > 0 && (
+        ) : (
           <InfiniteScroll
             dataLength={filteredProducts.length}
             next={fetchLazyProducts}
             hasMore={hasMore}
             loader={
-              <div className="col-span-full flex justify-center py-12">
+              <div className="py-12 text-center">
                 <Spinner />
               </div>
             }
             endMessage={
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="col-span-full text-center py-12 text-neutral-500 font-medium"
-              >
-                ✅ You've seen all products
-              </motion.p>
+              <p className="py-12 text-center text-slate-500">You’ve reached the end of the collection.</p>
             }
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
               {filteredProducts.map((product) => (
-                <Suspense
-                  key={product.id}
-                  fallback={<SkeletonProductCard />}
-                >
-                  <ModernProductCard product={product} />
-                </Suspense>
+                <ModernProductCard key={product.id} product={product} />
               ))}
             </div>
           </InfiniteScroll>
         )}
-      </div>
+      </section>
 
-      {/* Newsletter Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16 mt-16">
-        <div className="max-w-2xl mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-          >
-            <h2 className="text-3xl font-bold mb-4">
-              Subscribe to Our Newsletter
-            </h2>
-            <p className="text-blue-100 mb-8 text-lg">
-              Get exclusive deals, new products, and special offers sent to your inbox
-            </p>
-            <div className="flex gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 text-neutral-900"
-              />
-              <Button variant="secondary" size="md">
-                Subscribe
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="rounded-[32px] border border-slate-200 bg-white p-10 shadow-card">
+          <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            <div className="space-y-6">
+              <span className="inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700">Limited time offer</span>
+              <h2 className="text-3xl font-semibold text-slate-900">Upgrade your style with curated deals.</h2>
+              <p className="text-slate-600 leading-7">
+                Explore seasonal picks, exclusive bundles, and trending products designed to delight your everyday routine.
+              </p>
+              <Button variant="primary" size="lg">
+                See deals
               </Button>
             </div>
-          </motion.div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {trendingProducts.map((item) => (
+                <div key={item.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+                  <p className="text-sm font-semibold text-slate-900 line-clamp-2">{item.title}</p>
+                  <p className="mt-3 text-sm text-slate-600">${item.price?.toFixed(2)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" ref={testimonialsRef}>
+        <div className="text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.35em] text-blue-600">Testimonials</p>
+          <h2 className="mt-4 text-3xl font-semibold text-slate-900">Customers love the new ShopHub experience</h2>
+        </div>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {testimonials.map((testimonial, index) => (
+            <motion.article
+              key={index}
+              whileHover={{ y: -6 }}
+              className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm"
+            >
+              <p className="text-slate-600 leading-7">“{testimonial.quote}”</p>
+              <div className="mt-6">
+                <p className="font-semibold text-slate-900">{testimonial.name}</p>
+                <p className="text-sm text-slate-500">{testimonial.role}</p>
+              </div>
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-gradient-to-r from-blue-700 to-slate-900 text-white py-16">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-semibold">Never miss a launch</h2>
+          <p className="mt-3 text-slate-200 leading-7">
+            Join our newsletter for new arrivals, exclusive previews, and member-only perks.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <input
+              type="email"
+              aria-label="Email address"
+              placeholder="Enter your email"
+              className="w-full rounded-full border border-white/20 bg-white/10 px-5 py-3 text-white placeholder:text-slate-200 focus:outline-none focus:ring-2 focus:ring-white/70 sm:max-w-md"
+            />
+            <Button variant="secondary" size="lg" className="rounded-full px-8 py-3">
+              Subscribe
+            </Button>
+          </div>
         </div>
       </section>
     </div>

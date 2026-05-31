@@ -16,75 +16,75 @@ const ModernAbout = lazy(() => import("../pages/ModernAbout"));
 const ModernPageNotFound = lazy(() => import("../pages/ModernPageNotFound"));
 
 const Mainroutes = () => {
-    const loadingFallback = (
-        <div className="min-h-screen flex items-center justify-center">
-            <Spinner size="lg" />
-        </div>
-    );
+  const loadingFallback = (
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <Spinner size="lg" />
+    </div>
+  );
 
-    return (
-        <Suspense fallback={loadingFallback}>
-            <Routes>
-                <Route path="/" element={<ModernProducts />} />
+  return (
+    <Suspense fallback={loadingFallback}>
+      <Routes>
+        <Route path="/" element={<ModernProducts />} />
 
-                <Route
-                    path="/signin"
-                    element={
-                        <PublicRoute>
-                            <ModernSignin />
-                        </PublicRoute>
-                    }
-                />
-                <Route
-                    path="/signup"
-                    element={
-                        <PublicRoute>
-                            <ModernSignup />
-                        </PublicRoute>
-                    }
-                />
+        <Route
+          path="/signin"
+          element={
+            <PublicRoute>
+              <ModernSignin />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <ModernSignup />
+            </PublicRoute>
+          }
+        />
 
-                <Route
-                    path="/settings"
-                    element={
-                        <ProtectedRoute>
-                            <ModernSettings />
-                        </ProtectedRoute>
-                    }
-                />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <ModernSettings />
+            </ProtectedRoute>
+          }
+        />
 
-                <Route
-                    path="/update-product/:id"
-                    element={
-                        <ProtectedRoute>
-                            <ModernProductDetails />
-                        </ProtectedRoute>
-                    }
-                />
+        <Route
+          path="/update-product/:id"
+          element={
+            <ProtectedRoute>
+              <ModernProductDetails />
+            </ProtectedRoute>
+          }
+        />
 
-                <Route
-                    path="/create-product"
-                    element={
-                        <ProtectedRoute>
-                            <ModernCreateProduct />
-                        </ProtectedRoute>
-                    }
-                />
+        <Route
+          path="/create-product"
+          element={
+            <ProtectedRoute>
+              <ModernCreateProduct />
+            </ProtectedRoute>
+          }
+        />
 
-                <Route
-                    path="/cart"
-                    element={
-                        <ProtectedRoute>
-                            <ModernCart />
-                        </ProtectedRoute>
-                    }
-                />
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <ModernCart />
+            </ProtectedRoute>
+          }
+        />
 
-                <Route path="/about" element={<ModernAbout />} />
-                <Route path="*" element={<PageNotFound />} />
-            </Routes>
-        </Suspense>
-    );
+        <Route path="/about" element={<ModernAbout />} />
+        <Route path="*" element={<ModernPageNotFound />} />
+      </Routes>
+    </Suspense>
+  );
 };
 
 export default Mainroutes;

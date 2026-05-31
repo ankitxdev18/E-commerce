@@ -1,1 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  font-family: "Inter", "Outfit", "Poppins", system-ui, sans-serif;
+  background-color: #f8fbff;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 30%), radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.08), transparent 25%);
+  color: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.24);
+}
+
+::selection {
+  background: #0ea5e9;
+  color: #ffffff;
+}
+
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
